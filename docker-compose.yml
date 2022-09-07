@@ -1,0 +1,27 @@
+version: '3.6'
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: ste_mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo:/data/db
+
+  web_server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: python /backend/main.py
+    container_name: ste_web_app
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    volumes:
+      - ./web_app:/backend
+    ports:
+      - '127.0.0.1:8080:8080'
